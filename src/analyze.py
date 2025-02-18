@@ -563,15 +563,23 @@ class AnalyzeData:
 
     def plot_test_data_2(self, table_name):
         try:
+
             query = f"SELECT `donation_date`, `donation_source`, `total_donation` FROM `{table_name}`"
             self.cursor.execute(query)
             rows = self.cursor.fetchall()
 
+            # Store results in a DataFrame
             df = pd.DataFrame(rows, columns=["donation_date", "donation_source", "total_donation"])
 
             if df.empty:
                 print(f"No data found in table `{table_name}`.")
                 return
+
+            # Convert total_donation to numeric to avoid errors
+            df["total_donation"] = pd.to_numeric(df["total_donation"])
+
+            # Ensure bars with zero donations still appear by setting a small minimum height
+            df["total_donation"] = df["total_donation"].apply(lambda x: 10 if x == 0 else x)
 
             # Define colors for each donation source
             color_map = {"Mail": "red", "Online": "blue", "Event": "green"}
@@ -588,12 +596,14 @@ class AnalyzeData:
                 textposition='auto'
             ))
 
-            # Customize layout
+            # Set y-axis range to avoid incorrect scaling
+            max_y = df["total_donation"].max() if df["total_donation"].max() > 10 else 100  # Prevents blank graph
             fig.update_layout(
                 title=f"Total Donations by Date - {table_name}",
                 xaxis_title="Donation Date",
                 yaxis_title="Total Donation Amount",
                 xaxis=dict(type="category"),
+                yaxis=dict(range=[0, max_y]),  # Ensures proper y-axis scaling
                 showlegend=False
             )
 
