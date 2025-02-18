@@ -10,14 +10,13 @@ class DatabaseConfig:
 db_config = DatabaseConfig(
     host = 'localhost',
     user = 'root',
-    password = 'Kenkosql311',
-    db_name = 'DA1_db'
+    password = '',
+    db_name = ''
 )
 
 
 
 # api_keys = {
-#     'News API' : '',
 #     'Openai API' : ''
 # }
 
