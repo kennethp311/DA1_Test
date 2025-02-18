@@ -120,6 +120,7 @@ def main():
     analyzer_obj = AnalyzeData(db_config, api_keys)
 
     Problem_1(analyzer_obj)
+    # analyzer_obj.plot_test_data_2("Test_Data_2")
 
     # Invalid_Names(analyzer_obj)
     # Invalid_States(analyzer_obj)
