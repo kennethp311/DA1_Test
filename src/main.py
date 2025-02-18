@@ -119,8 +119,7 @@ def Problem_1(analyzer_obj):
 def main():
     analyzer_obj = AnalyzeData(db_config, api_keys)
 
-    analyzer_obj.create_exact_table_from_csv("DA1/Test_Data_2.csv")
-    # Problem_1(analyzer_obj)
+    Problem_1(analyzer_obj)
 
     # Invalid_Names(analyzer_obj)
     # Invalid_States(analyzer_obj)
