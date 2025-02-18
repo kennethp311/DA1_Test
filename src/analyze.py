@@ -4,6 +4,8 @@ import os
 import openai 
 import string
 from us import states 
+import pandas as pd
+import plotly.graph_objects as go
 
 class AnalyzeData:
     def __init__(self, db_config, api_keys):
@@ -556,3 +558,49 @@ class AnalyzeData:
                 missing_pairs.append((row['id'], missing_keys))
 
         return missing_pairs
+
+
+
+    def plot_test_data_2(self, table_name):
+        try:
+            query = f"SELECT `donation_date`, `donation_source`, `total_donation` FROM `{table_name}`"
+            self.cursor.execute(query)
+            rows = self.cursor.fetchall()
+
+            df = pd.DataFrame(rows, columns=["donation_date", "donation_source", "total_donation"])
+
+            if df.empty:
+                print(f"No data found in table `{table_name}`.")
+                return
+
+            # Define colors for each donation source
+            color_map = {"Mail": "red", "Online": "blue", "Event": "green"}
+            colors = [color_map.get(source, "gray") for source in df["donation_source"]]
+
+            # Create the bar chart
+            fig = go.Figure()
+
+            fig.add_trace(go.Bar(
+                x=df["donation_date"],
+                y=df["total_donation"],
+                marker_color=colors,
+                text=df["donation_source"],
+                textposition='auto'
+            ))
+
+            # Customize layout
+            fig.update_layout(
+                title=f"Total Donations by Date - {table_name}",
+                xaxis_title="Donation Date",
+                yaxis_title="Total Donation Amount",
+                xaxis=dict(type="category"),
+                showlegend=False
+            )
+
+            # Show the plot
+            fig.show()
+
+        except mysql.connector.Error as err:
+            print(f"MySQL Error: {err}")
+        except Exception as e:
+            print(f"Error: {e}")
